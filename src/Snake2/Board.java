@@ -1,14 +1,11 @@
 package Snake2;
 
-import java.awt.Graphics;
-import java.awt.Image;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
-import javax.swing.Timer;
+import javax.swing.*;
 
 public class Board extends JPanel implements ActionListener {
     int size = 10, delay = 150;
@@ -17,8 +14,12 @@ public class Board extends JPanel implements ActionListener {
     Timer timer;
     Image body;
 
+
+    private JLabel label;
+
+
     public Board() {
-        addKeyListener(new TAdapter());
+        addKeyListener(new TAdaptaer());
         ImageIcon iid = new ImageIcon(this.getClass().getResource("dot.png"));
         body = iid.getImage();
         Start();
@@ -66,29 +67,32 @@ public class Board extends JPanel implements ActionListener {
        repaint();
     }
 
-    private class TAdapter extends KeyAdapter {
-        public void keyPressed(KeyEvent e) {
-            int key = e.getKeyCode();
+    private class TAdaptaer extends KeyAdapter {
 
-            if ((key == KeyEvent.VK_LEFT)) {
+        public void keyPressed(KeyEvent e) {
+        /*    label = new JLabel();
+            panel.add(label, BorderLayout.CENTER);
+            label.setFont(new Font("Calibri", Font.PLAIN, 20));
+            label.setText(e.getKeyText(e.getKeyCode()));   */
+            if ((e.getKeyCode()== KeyEvent.VK_LEFT)) {
                 left = true;
                 up = false;
                 down = false;
             }
 
-            if ((key == KeyEvent.VK_RIGHT)) {
+            if ((e.getKeyCode() == KeyEvent.VK_RIGHT)) {
                 right = true;
                 up = false;
                 down = false;
             }
 
-            if ((key == KeyEvent.VK_UP)) {
+            if ((e.getKeyCode() == KeyEvent.VK_UP)) {
                 up = true;
                 right = false;
                 left = false;
             }
 
-            if ((key == KeyEvent.VK_DOWN)) {
+            if ((e.getKeyCode() == KeyEvent.VK_DOWN)) {
                 down = true;
                 right = false;
                 left = false;
