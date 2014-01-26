@@ -1,10 +1,12 @@
-package Snake2;
+package RU;
 
 import javax.swing.JFrame;
 
 public class Snake extends JFrame {
 
     public Snake() {
+
+        add(new Board());
 
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setSize(300, 300);
@@ -17,5 +19,6 @@ public class Snake extends JFrame {
 
     public static void main(String[] args) {
         new Snake();
+
     }
 }
