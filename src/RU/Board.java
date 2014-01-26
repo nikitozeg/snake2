@@ -12,7 +12,7 @@ public class Board extends JPanel implements ActionListener {
     int
             size = 10, delay = 150;
     boolean
-            setter = true;
+            neednewApple = true;
     int
             x[] = new int[300],
             y[] = new int[300],
@@ -50,8 +50,8 @@ public class Board extends JPanel implements ActionListener {
         for (int z = 0; z < dots; z++) {
             g.drawImage(body, x[z], y[z], this);
 
-            if (setter) {
-                setter = false;
+            if (neednewApple) {
+                neednewApple = false;
                 appley[0] = 10 * ((int) (Math.random() * 27));
                 applex[0] = 10 * ((int) (Math.random() * 27));
             }
@@ -62,7 +62,7 @@ public class Board extends JPanel implements ActionListener {
     public void checkApple() {
         if ((x[0] == applex[0]) && (y[0] == appley[0])) {
             dots++;
-            setter = true;
+            neednewApple = true;
         }
     }
 
