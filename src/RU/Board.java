@@ -70,6 +70,7 @@ public class Board extends JPanel implements ActionListener {
         if (((x[0] == -10 || x[0] == 300) || (y[0] == -10 || y[0] == 300)) == true) {
             setBackground(Color.black);
             JOptionPane.showMessageDialog(null, "Meeting with the wall");
+            System.exit(0);
         }
         for (int z = dots; z > 0; z--) {
             x[z] = x[(z - 1)];
