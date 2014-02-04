@@ -1,73 +1,107 @@
-package RU;
+package ru;
 
+/**
+ *
+ @author is Ivanov Nikita
+ */
+
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import javax.swing.*;
-import java.awt.Color;
+
+/**
+ * Class Board.
+ * <p/>
+ * {@value} neednewAppleFirst if true - need to put new apple on Board.
+ *
+ * @value neednewAppleSecond if true - need to put a second apple on Board.
+ */
 
 public class Board extends JPanel implements ActionListener {
-    int
-            size = 10, delay = 150;
-    boolean
-            neednewApple = true;
-    int
-            x[] = new int[300],
-            y[] = new int[300],
-            dots = 3,
-            applex[] = new int[300],
-            appley[] = new int[300];
-    boolean
-            left = false,
-            right = false,
-            up = false,
-            down = false;
-    Timer timer;
-    Image body;
+    final private int windowSize = 300;
+    final private int dotsSize = 10;
+    private int dots = 3;
+    private boolean neednewAppleFirst = true;
+    private boolean neednewAppleSecond = true;
+    private int[] x = new int[windowSize];
+    private int[] y = new int[windowSize];
+    private int applex;
+    private int appley;
+    private int applexx;
+    private int appleyy;
+    private boolean left = false;
+    private boolean right = false;
+    private boolean up = false;
+    private boolean down = false;
+    private Image body, appleImg;
+
+    /**
+     * MEthod for drawing a Board.
+     *
+     * @param
+     */
 
     public Board() {
-        addKeyListener(new TAdaptaer());
+        addKeyListener(new TAdapter());
         ImageIcon iid = new ImageIcon(this.getClass().getResource("dot.png"));
         body = iid.getImage();
-        Start();
+        appleImg = iid.getImage();
+        start();
         setFocusable(true);
     }
 
-    public void Start() {
-
+    void start() {
+        final int startPosOfSnake = 50;
         for (int z = 0; z < dots; z++) {
-            x[z] = 50 - z * 10;
-            y[z] = 50;
+            x[z] = startPosOfSnake - z * dotsSize;
+            y[z] = startPosOfSnake;
         }
-        timer = new Timer(delay, this);
+        final int delay = 150;
+        Timer timer = new Timer(delay, this);
         timer.start();
+    }
+
+    public void drawApple(Graphics g) {
+        if (neednewAppleFirst) {
+            appley = dotsSize * ((int) (Math.random() * 27));
+            applex = dotsSize * ((int) (Math.random() * 27));
+            neednewAppleFirst = false;
+        }
+        g.drawImage(appleImg, applex, appley, this);
+
+        if (neednewAppleSecond) {
+            applexx = dotsSize * ((int) (Math.random() * 27));
+            appleyy = dotsSize * ((int) (Math.random() * 27));
+            neednewAppleSecond = false;
+        }
+        g.drawImage(appleImg, applexx, appleyy, this);
     }
 
     public void paint(Graphics g) {
         super.paint(g);
         for (int z = 0; z < dots; z++) {
             g.drawImage(body, x[z], y[z], this);
-
-            if (neednewApple) {
-                neednewApple = false;
-                appley[0] = 10 * ((int) (Math.random() * 27));
-                applex[0] = 10 * ((int) (Math.random() * 27));
-            }
-            g.drawImage(body, applex[0], appley[0], this);
         }
+        drawApple(g);
     }
 
-    public void checkApple() {
-        if ((x[0] == applex[0]) && (y[0] == appley[0])) {
+    void checkApple() {
+        if ((x[0] == applex) && (y[0] == appley)) {
             dots++;
-            neednewApple = true;
+            neednewAppleFirst = true;
+        }
+
+        if ((x[0] == applexx) && (y[0] == appleyy)) {
+            dots++;
+            neednewAppleSecond = true;
         }
     }
 
-    public void move() {
-        if (((x[0] == -10 || x[0] == 300) || (y[0] == -10 || y[0] == 300)) == true) {
+    void move() {
+        if (((x[0] == -10 || x[0] == windowSize) || (y[0] == -10 || y[0] == windowSize))) {
             setBackground(Color.black);
             JOptionPane.showMessageDialog(null, "Meeting with the wall");
             System.exit(0);
@@ -77,15 +111,19 @@ public class Board extends JPanel implements ActionListener {
             y[z] = y[(z - 1)];
         }
         if (left) {
+            int size = dotsSize;
             x[0] -= size;
         }
         if (right) {
+            int size = dotsSize;
             x[0] += size;
         }
         if (up) {
+            int size = dotsSize;
             y[0] -= size;
         }
         if (down) {
+            int size = dotsSize;
             y[0] += size;
         }
     }
@@ -96,7 +134,7 @@ public class Board extends JPanel implements ActionListener {
         repaint();
     }
 
-    private class TAdaptaer extends KeyAdapter {
+    private class TAdapter extends KeyAdapter {
 
         public void keyPressed(KeyEvent e) {
 
