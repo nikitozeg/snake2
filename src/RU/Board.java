@@ -1,24 +1,12 @@
 package ru;
 
-/**
- *
- @author is Ivanov Nikita
- */
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-
-/**
- * Class Board.
- * <p/>
- * {@value} neednewAppleFirst if true - need to put new apple on Board.
- *
- * @value neednewAppleSecond if true - need to put a second apple on Board.
- */
+import java.util.ArrayList;
 
 public class Board extends JPanel implements ActionListener {
     final private int windowSize = 300;
@@ -26,6 +14,7 @@ public class Board extends JPanel implements ActionListener {
     private int dots = 3;
     private boolean neednewAppleFirst = true;
     private boolean neednewAppleSecond = true;
+    private boolean isNeedSearchAppleZone = true;
     private int[] x = new int[windowSize];
     private int[] y = new int[windowSize];
     private int applex;
@@ -37,20 +26,18 @@ public class Board extends JPanel implements ActionListener {
     private boolean up = false;
     private boolean down = false;
     private Image body, appleImg;
-
-    /**
-     * MEthod for drawing a Board.
-     *
-     * @param
-     */
+    int position;
 
     public Board() {
         addKeyListener(new TAdapter());
         ImageIcon iid = new ImageIcon(this.getClass().getResource("dot.png"));
         body = iid.getImage();
-        appleImg = iid.getImage();
+        ImageIcon iidd = new ImageIcon(this.getClass().getResource("apple.png"));
+        appleImg = iidd.getImage();
         start();
         setFocusable(true);
+        setBackground(Color.BLACK);
+
     }
 
     void start() {
@@ -88,16 +75,89 @@ public class Board extends JPanel implements ActionListener {
         drawApple(g);
     }
 
+    public void checkApple(int xx, int yy) {
+        applex = xx;
+        appley = yy;
+        if (isNeedSearchAppleZone) {
+            if (((x[0] + 20 == applex) & (y[0] + 10 == appley)) |
+                    ((x[0] + 20 == applex) & (y[0] + 20 == appley)) |
+                    ((x[0] + 20 == applex) & (y[0] == appley)) |
+                    ((x[0] + 20 == applex) & (y[0] - 10 == appley)) |
+                    ((x[0] + 20 == applex) & (y[0] - 20 == appley)) |
+                    ((x[0] + 10 == applex) & (y[0] + 20 == appley)) |
+                    ((x[0] + 10 == applex) & (y[0] - 20 == appley)) |
+                    ((x[0] == applex) & (y[0] + 20 == appley)) |
+                    ((x[0] == applex) & (y[0] - 20 == appley)) |
+                    ((x[0] - 10 == applex) & (y[0] + 20 == appley)) |
+                    ((x[0] - 10 == applex) & (y[0] - 20 == appley)) |
+                    ((x[0] - 20 == applex) & (y[0] + 20 == appley)) |
+                    ((x[0] - 20 == applex) & (y[0] + 10 == appley)) |
+                    ((x[0] - 20 == applex) & (y[0] == appley)) |
+                    ((x[0] - 20 == applex) & (y[0] - 10 == appley)) |
+                    ((x[0] - 20 == applex) & (y[0] - 20 == appley))
+                    ) {
+                isNeedSearchAppleZone = false;
+                appleEscaping();
+            }
+        }
+    }                                   //l
+
+
     void checkApple() {
-        if ((x[0] == applex) && (y[0] == appley)) {
+        checkApple(applex, appley);
+
+
+        if ((x[0] == applex) & (y[0] == appley)) {
             dots++;
             neednewAppleFirst = true;
+            isNeedSearchAppleZone = true;
+        }
+    }
+
+    public void appleEscaping() {
+        position = ((int) (Math.random() * 9));
+        switch (position) {
+            case 0:
+                repaint();
+                break;
+            case 1:
+                appley -= 10;
+                repaint();
+                break;
+            case 2:
+                appley += 10;
+                repaint();
+                break;
+            case 3:
+                applex -= 10;
+                repaint();                                           //d
+                break;
+            case 4:
+                applex += 10;
+                repaint();
+                break;
+            case 5:
+                applex += 10;
+                appley += 10;
+                repaint();
+                break;
+            case 6:
+                applex += 10;
+                appley -= 10;
+                repaint();
+                break;
+            case 7:
+                applex -= 10;
+                appley += 10;
+                repaint();
+                break;
+            case 8:
+                applex -= 10;
+                appley -= 10;
+                repaint();
+                break;
         }
 
-        if ((x[0] == applexx) && (y[0] == appleyy)) {
-            dots++;
-            neednewAppleSecond = true;
-        }
     }
 
     void move() {
@@ -132,6 +192,10 @@ public class Board extends JPanel implements ActionListener {
         move();
         checkApple();
         repaint();
+        if (!isNeedSearchAppleZone) {
+            appleEscaping();
+            checkApple();
+        }
     }
 
     private class TAdapter extends KeyAdapter {
